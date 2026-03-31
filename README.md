@@ -1,4 +1,4 @@
-# GitHub Repository Security Scanner
+# [Flood] GitHub Repository Security Scanner
 
 A Node.js tool that scans GitHub repositories for compromised npm dependencies across all branches. It checks `package.json` and `package-lock.json` files against a database of known malware-compromised packages.
 
