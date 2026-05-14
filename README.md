@@ -5,10 +5,11 @@ A Node.js tool that scans GitHub repositories for compromised npm dependencies a
 ## What This Tool Does
 
 This scanner checks multiple GitHub repositories and their branches for compromised dependencies. It currently scans for:
-- **axios-compromise-2026**: 1 package (axios)
-- **canister-worm**: 62 packages (@emilgroup/* SDKs, @opengov/* packages, etc.)
-- **shai-hulud**: 18 packages (chalk, ansi-styles, color utilities, etc.)
-- **singularity**: 195 packages (@ctrl/*, @nativescript-community/*, @operato/*, Angular/Ember packages, etc.)
+- **axios-compromise-2026** *(March 31, 2026)*: 1 package (axios) — [Source](https://safedep.io/axios-npm-supply-chain-compromise)
+- **canister-worm** *(March 20, 2026)*: 62 packages (@emilgroup/* SDKs, @opengov/* packages, etc.) — [Source](https://socket.dev/blog/canisterworm-npm-publisher-compromise-deploys-backdoor-across-29-packages)
+- **shai-hulud** *(September 8, 2025)*: 18 packages (chalk, ansi-styles, color utilities, etc.) — [Source](https://socket.dev/blog/npm-author-qix-compromised-in-major-supply-chain-attack)
+- **singularity** *(September 14–16, 2025)*: 195 packages (@ctrl/*, @nativescript-community/*, @operato/*, Angular/Ember packages, etc.) — [Source](https://socket.dev/blog/ongoing-supply-chain-attack-targets-crowdstrike-npm-packages)
+- **mini-shai-hulud** *(May 11, 2026)*: 175 packages (TanStack router ecosystem, UiPath, @squawk, @mistralai, OpenSearch, and others) — [Source](https://socket.dev/blog/tanstack-npm-packages-compromised-mini-shai-hulud-supply-chain-attack)
 
 The tool will:
 - ✅ Scan all configured repositories and their branches
@@ -369,19 +370,21 @@ This allows the scanner to be used in CI/CD pipelines or automated security chec
 The scanner loads malware definitions from the `malware-dbs/` directory. All `.json` files in this directory are automatically loaded at startup.
 
 **Current databases:**
-- `axios-2026.json` - axios compromise (1 package)
-- `canister-worm.json` - Canister worm (62 packages)
-- `shai-hulud.json` - Shai-Hulud worm (18 packages)
-- `singularity.json` - Singularity attack (195 packages)
+- `axios-2026.json` - axios compromise, March 31, 2026 (1 package) — [Source](https://safedep.io/axios-npm-supply-chain-compromise)
+- `canister-worm.json` - CanisterWorm, March 20, 2026 (62 packages) — [Source](https://socket.dev/blog/canisterworm-npm-publisher-compromise-deploys-backdoor-across-29-packages)
+- `shai-hulud.json` - Shai-Hulud worm (Qix- maintainer compromise), September 8, 2025 (18 packages) — [Source](https://socket.dev/blog/npm-author-qix-compromised-in-major-supply-chain-attack)
+- `singularity.json` - Shai-Hulud worm (broader campaign), September 14–16, 2025 (195 packages) — [Source](https://socket.dev/blog/ongoing-supply-chain-attack-targets-crowdstrike-npm-packages)
+- `mini-shai-hulud.json` - Mini Shai-Hulud / TeamPCP, May 11, 2026 (175 packages) — [Source](https://socket.dev/blog/tanstack-npm-packages-compromised-mini-shai-hulud-supply-chain-attack)
 
 When you run the scanner, you'll see:
 ```
 Loading malware databases from ./malware-dbs...
   ✓ Loaded axios-2026.json: 1 package(s) from axios-compromise-2026
   ✓ Loaded canister-worm.json: 62 package(s) from canister-worm
+  ✓ Loaded mini-shai-hulud.json: 175 package(s) from mini-shai-hulud
   ✓ Loaded shai-hulud.json: 18 package(s) from shai-hulud
   ✓ Loaded singularity.json: 195 package(s) from singularity
-Total: 276 unique compromised package(s) from 4 database(s)
+Total: 451 unique compromised package(s) from 5 database(s)
 ```
 
 ### Adding New Malware Databases
@@ -477,9 +480,10 @@ repo-scanner/
 ├── malware-dbs/              # Malware database directory
 │   ├── README.md             # Database format documentation
 │   ├── axios-2026.json       # axios compromise database
-│   ├── canister-worm.json    # Canister worm database
-│   ├── shai-hulud.json       # Shai-Hulud worm database
-│   └── singularity.json      # Singularity attack database
+│   ├── canister-worm.json    # CanisterWorm database (March 20, 2026)
+│   ├── mini-shai-hulud.json  # Mini Shai-Hulud / TeamPCP database
+│   ├── shai-hulud.json       # Shai-Hulud worm database (Sep 8, 2025)
+│   └── singularity.json      # Singularity / Shai-Hulud worm database (Sep 14-16, 2025)
 ├── package.json              # npm dependencies
 ├── .env.example              # Environment variable template
 ├── .env                      # Your GitHub token (create this, never commit)
