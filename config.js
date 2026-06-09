@@ -7,7 +7,8 @@ module.exports = {
   // List of repositories to scan
   // Format: { owner: 'username', repo: 'repository-name' }
   repositories: [
-    { owner: 'defra', repo: 'flood-app' }//,
+    { owner: 'defra', repo: 'flood-app' }
+    // ,
     // { owner: 'defra', repo: 'flood-service' },
     // { owner: 'defra', repo: 'flood-db' },
     // { owner: 'defra', repo: 'flood-gis' },
@@ -19,7 +20,16 @@ module.exports = {
     // { owner: 'defra', repo: 'fws-db' },
     // { owner: 'defra', repo: 'flood-data' },
     // { owner: 'defra', repo: 'flood-service-tests-v2' },
-    // { owner: 'defra', repo: 'cap-xml-tests' }
+    // { owner: 'defra', repo: 'cap-xml-tests' },
+    // { owner: 'defra', repo: 'cyltfr-app' },
+    // { owner: 'defra', repo: 'cyltfr-service' },
+    // { owner: 'defra', repo: 'cyltfr-admin' },
+    // { owner: 'defra', repo: 'cyltfr-data' },
+    // { owner: 'defra', repo: 'fmp-app' },
+    // { owner: 'defra', repo: 'fmp-service' },
+    // { owner: 'defra', repo: 'fmp-api' },
+    // { owner: 'defra', repo: 'fmp-riskadmin-api' },
+    // { owner: 'defra', repo: 'fmp-gis-gp-services' },
   ],
 
   // Compromised packages list URL (remote text file)
