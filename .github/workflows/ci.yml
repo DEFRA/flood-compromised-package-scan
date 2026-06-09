@@ -24,7 +24,7 @@ jobs:
 
             - name: Run unit tests
               run: |
-                npm run unit-test
+                npm run test
 
             - name: Dependency Review
               if: github.event_name == 'pull_request'

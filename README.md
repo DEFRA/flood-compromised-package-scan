@@ -528,6 +528,23 @@ The linter runs automatically when you commit code (recommended to set up a pre-
 For a better development experience, install StandardJS extensions for your editor:
 - VS Code: [JavaScript Standard Style](https://marketplace.visualstudio.com/items?itemName=standard.vscode-standard)
 - Atom: [linter-js-standard](https://atom.io/packages/linter-js-standard)
+
+### Testing
+
+This project uses [Jest](https://jestjs.io) for unit testing.
+
+**Available commands:**
+
+```bash
+# Run all tests
+npm test
+```
+
+Tests are located in the `test/` directory and cover:
+- `compromised-packages-loader.test.js` — Remote file parsing and section extraction
+- `dependency-checker.test.js` — Version comparison and dependency analysis
+- `scanner.test.js` — Full scan flow with mocked GitHub API
+- `github-api.test.js` — Git Trees API file discovery and content retrieval
 - Sublime Text: [SublimeLinter-contrib-standard](https://packagecontrol.io/packages/SublimeLinter-contrib-standard)
 
 ## Support
