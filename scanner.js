@@ -1,11 +1,13 @@
 const GitHubAPI = require('./github-api')
 const DependencyChecker = require('./dependency-checker')
+const CompromisedPackagesLoader = require('./compromised-packages-loader')
 
 class Scanner {
   constructor (config) {
     this.config = config
     this.githubApi = new GitHubAPI(config.githubToken)
-    this.checker = new DependencyChecker(config.malwareDbPath)
+    this.checker = new DependencyChecker()
+    this.loader = new CompromisedPackagesLoader(config.compromisedPackagesUrl)
     this.results = []
   }
 
@@ -369,6 +371,10 @@ class Scanner {
   async run () {
     console.log('GitHub Repository Security Scanner')
     console.log('==================================\n')
+
+    // Download and load the compromised packages list
+    const remoteData = await this.loader.load()
+    this.checker.loadFromRemoteData(remoteData)
 
     // Check rate limit
     const rateLimit = await this.githubApi.checkRateLimit()

@@ -1,23 +1,34 @@
 # [Flood] GitHub Repository Security Scanner
 
-A Node.js tool that scans GitHub repositories for compromised npm dependencies across all branches. It checks `package.json` and `package-lock.json` files against a database of known malware-compromised packages.
+> **⚠️ Important Change (June 2026):** This tool has been updated to use a remotely maintained compromised packages list instead of locally created malware database JSON files. The scanner now downloads the latest [compromised-packages.txt](https://github.com/Cobenian/shai-hulud-detect/blob/main/compromised-packages.txt) from the Cobenian/shai-hulud-detect repository on each run. This means the tool's effectiveness now relies on that remote file being kept up to date as new attacks are discovered. If the remote source becomes stale or unavailable, the scanner will not detect newly compromised packages.
+
+A Node.js tool that scans GitHub repositories for compromised npm dependencies across all branches. It checks `package.json` and `package-lock.json` files against a remotely maintained list of known compromised packages.
 
 ## What This Tool Does
 
-This scanner checks multiple GitHub repositories and their branches for compromised dependencies. It currently scans for:
-- **axios-compromise-2026** *(March 31, 2026)*: 1 package (axios) — [Source](https://safedep.io/axios-npm-supply-chain-compromise)
-- **canister-worm** *(March 20, 2026)*: 62 packages (@emilgroup/* SDKs, @opengov/* packages, etc.) — [Source](https://socket.dev/blog/canisterworm-npm-publisher-compromise-deploys-backdoor-across-29-packages)
-- **shai-hulud** *(September 8, 2025)*: 18 packages (chalk, ansi-styles, color utilities, etc.) — [Source](https://socket.dev/blog/npm-author-qix-compromised-in-major-supply-chain-attack)
-- **singularity** *(September 14–16, 2025)*: 195 packages (@ctrl/*, @nativescript-community/*, @operato/*, Angular/Ember packages, etc.) — [Source](https://socket.dev/blog/ongoing-supply-chain-attack-targets-crowdstrike-npm-packages)
-- **mini-shai-hulud** *(May 11, 2026)*: 175 packages (TanStack router ecosystem, UiPath, @squawk, @mistralai, OpenSearch, and others) — [Source](https://socket.dev/blog/tanstack-npm-packages-compromised-mini-shai-hulud-supply-chain-attack)
+This scanner checks multiple GitHub repositories and their branches for compromised dependencies. It downloads the latest [compromised-packages.txt](https://github.com/Cobenian/shai-hulud-detect/blob/main/compromised-packages.txt) file maintained by the community, which contains 3,290+ confirmed compromised package versions from multiple supply chain attacks between September 2025 and June 2026.
+
+Attack campaigns covered include (but are not limited to):
+- **Chalk/Debug Crypto Theft** *(September 2025)*
+- **Sandworm Mode AI Toolchain Poisoning** *(February 2026)*
+- **Axios Supply Chain Attack** *(March 2026)*
+- **Mini Shai-Hulud / TanStack** *(May 2026)*
+- **Mini Shai-Hulud AntV/atool wave** *(May 2026)*
+- **Megalodon GitHub-repo backdooring** *(May 2026)*
+- **Miasma @redhat-cloud-services** *(June 2026)*
+- **Miasma Phantom Gyp** *(June 2026)*
+- **IronWorm** *(June 2026)*
+- And many more...
+
+The list is continuously updated as new attacks are discovered.
 
 The tool will:
+- ✅ Download the latest compromised packages list remotely on each run
 - ✅ Scan all configured repositories and their branches
 - ✅ Check both `package.json` and `package-lock.json` files
-- ✅ Load multiple malware databases automatically
 - ✅ Identify if compromised versions are present
 - ✅ Distinguish between safe and compromised versions of flagged packages
-- ✅ Generate detailed reports for management
+- ✅ Generate detailed reports itemised by attack campaign name and date
 
 ## Prerequisites
 
@@ -117,11 +128,11 @@ npm start
 ```
 
 The scanner will:
-1. Load all malware databases from `malware-dbs/` directory
-2. Display which databases were loaded and how many packages
+1. Download the latest compromised packages list from the remote source
+2. Display how many attack campaigns and packages were loaded
 3. Check your GitHub API rate limit
 4. Scan each repository's branches
-5. Check for all compromised packages across all databases
+5. Check for all compromised packages
 6. Display real-time results in the console
 7. Save detailed JSON and summary text reports
 
@@ -129,26 +140,27 @@ The scanner will:
 
 ### Startup Output
 
-When the scanner starts, you'll see the malware databases being loaded:
+When the scanner starts, you'll see the compromised packages list being downloaded:
 
 ```
-Loading malware databases from ./malware-dbs...
-  ✓ Loaded axios-2026.json: 1 package(s) from axios-compromise-2026
-  ✓ Loaded shai-hulud.json: 18 package(s) from shai-hulud
-Total: 19 unique compromised package(s) from 2 database(s)
+Downloading compromised packages list from remote source...
+  URL: https://raw.githubusercontent.com/Cobenian/shai-hulud-detect/main/compromised-packages.txt
+  ✓ Downloaded and parsed successfully
+  ✓ Found 15 attack campaign(s)
+  ✓ Total: 1724 unique compromised npm package(s)
 
 GitHub Repository Security Scanner
 ==================================
 
 API Rate Limit: 4998/5000 remaining
-Resets at: Mon Mar 31 2026 12:00:00 GMT+0000
+Resets at: Mon Jun 09 2026 12:00:00 GMT+0000
 ```
 
 ### Console Output
 
 The scanner provides real-time output showing:
 
-- Malware databases loaded at startup
+- Remote compromised packages list download status
 - API rate limit status
 - Repository and branch being scanned
 - Status of each file (SAFE or COMPROMISED)
@@ -363,67 +375,39 @@ The scanner exits with specific codes:
 
 This allows the scanner to be used in CI/CD pipelines or automated security checks.
 
-## Malware Database
+## Compromised Packages Database
 
-### Multiple Database Support
+The scanner automatically downloads the latest compromised packages list from:
 
-The scanner loads malware definitions from the `malware-dbs/` directory. All `.json` files in this directory are automatically loaded at startup.
+**https://github.com/Cobenian/shai-hulud-detect/blob/main/compromised-packages.txt**
 
-**Current databases:**
-- `axios-2026.json` - axios compromise, March 31, 2026 (1 package) — [Source](https://safedep.io/axios-npm-supply-chain-compromise)
-- `canister-worm.json` - CanisterWorm, March 20, 2026 (62 packages) — [Source](https://socket.dev/blog/canisterworm-npm-publisher-compromise-deploys-backdoor-across-29-packages)
-- `shai-hulud.json` - Shai-Hulud worm (Qix- maintainer compromise), September 8, 2025 (18 packages) — [Source](https://socket.dev/blog/npm-author-qix-compromised-in-major-supply-chain-attack)
-- `singularity.json` - Shai-Hulud worm (broader campaign), September 14–16, 2025 (195 packages) — [Source](https://socket.dev/blog/ongoing-supply-chain-attack-targets-crowdstrike-npm-packages)
-- `mini-shai-hulud.json` - Mini Shai-Hulud / TeamPCP, May 11, 2026 (175 packages) — [Source](https://socket.dev/blog/tanstack-npm-packages-compromised-mini-shai-hulud-supply-chain-attack)
+This community-maintained file contains 3,290+ confirmed compromised package versions from multiple supply chain attacks. It is updated regularly as new attacks are discovered, so no manual database maintenance is required.
 
-When you run the scanner, you'll see:
-```
-Loading malware databases from ./malware-dbs...
-  ✓ Loaded axios-2026.json: 1 package(s) from axios-compromise-2026
-  ✓ Loaded canister-worm.json: 62 package(s) from canister-worm
-  ✓ Loaded mini-shai-hulud.json: 175 package(s) from mini-shai-hulud
-  ✓ Loaded shai-hulud.json: 18 package(s) from shai-hulud
-  ✓ Loaded singularity.json: 195 package(s) from singularity
-Total: 451 unique compromised package(s) from 5 database(s)
-```
+### How It Works
 
-### Adding New Malware Databases
+1. On each run, the scanner downloads the latest `compromised-packages.txt` file
+2. The file is parsed into attack campaigns (grouped by date and attack name)
+3. Each npm package entry is extracted with its compromised version(s)
+4. Reports are itemised by attack campaign for clear context
 
-To add a new vulnerability database:
+### Configuring the Source URL
 
-1. **Create a new JSON file** in the `malware-dbs/` directory (e.g., `canister-worm.json`)
+The remote URL is configured in `config.js`:
 
-2. **Use this format:**
-
-```json
-{
-  "vulnerability": "vulnerability-name",
-  "description": "Description of the vulnerability",
-  "severity": "critical",
-  "compromisedPackages": [
-    {
-      "name": "package-name",
-      "compromisedVersions": ["1.0.0", "1.0.1"],
-      "description": "Specific details about this package",
-      "severity": "critical"
-    }
-  ]
-}
+```javascript
+compromisedPackagesUrl: 'https://raw.githubusercontent.com/Cobenian/shai-hulud-detect/main/compromised-packages.txt',
 ```
 
-3. **Restart the scanner** - it will automatically load the new file
+You can change this to point to a different source or a local mirror if needed.
 
-**Tips:**
-- Use `"*"` in `compromisedVersions` to flag all versions of a package
-- Set severity to `critical`, `high`, `medium`, or `low`
-- Each file can contain multiple packages
-- See `malware-dbs/README.md` for detailed format documentation
+### Sources
 
-**Sources for compromised packages:**
-- https://github.com/advisories
-- https://snyk.io/vuln/npm
-- https://socket.dev/npm/
-- npm security advisories
+The compromised packages list aggregates data from:
+- [StepSecurity](https://www.stepsecurity.io)
+- [Wiz.io](https://www.wiz.io)
+- [Semgrep](https://semgrep.dev)
+- [JFrog Security](https://jfrog.com/blog)
+- [Socket.dev](https://socket.dev)
 
 ## API Rate Limiting
 
@@ -472,23 +456,17 @@ The scanner displays your rate limit status at startup. If you exceed the limit:
 
 ```
 repo-scanner/
-├── index.js                  # Main entry point
-├── scanner.js                # Core scanning logic
-├── github-api.js             # GitHub API client
-├── dependency-checker.js     # Dependency analysis
-├── config.js                 # Repository configuration
-├── malware-dbs/              # Malware database directory
-│   ├── README.md             # Database format documentation
-│   ├── axios-2026.json       # axios compromise database
-│   ├── canister-worm.json    # CanisterWorm database (March 20, 2026)
-│   ├── mini-shai-hulud.json  # Mini Shai-Hulud / TeamPCP database
-│   ├── shai-hulud.json       # Shai-Hulud worm database (Sep 8, 2025)
-│   └── singularity.json      # Singularity / Shai-Hulud worm database (Sep 14-16, 2025)
-├── package.json              # npm dependencies
-├── .env.example              # Environment variable template
-├── .env                      # Your GitHub token (create this, never commit)
-├── .gitignore                # Prevents committing sensitive files
-└── README.md                 # This file
+├── index.js                          # Main entry point
+├── scanner.js                        # Core scanning logic
+├── github-api.js                     # GitHub API client
+├── dependency-checker.js             # Dependency analysis
+├── compromised-packages-loader.js    # Remote compromised packages downloader/parser
+├── config.js                         # Repository configuration
+├── package.json                      # npm dependencies
+├── .env.example                      # Environment variable template
+├── .env                              # Your GitHub token (create this, never commit)
+├── .gitignore                        # Prevents committing sensitive files
+└── README.md                         # This file
 ```
 
 ## Security Best Practices
@@ -498,7 +476,6 @@ repo-scanner/
 - Use read-only GitHub tokens (Contents: Read-only)
 - Set token expiration dates (90 days recommended)
 - Keep `.env` file out of version control (already in .gitignore)
-- Regularly update the malware database with new threats
 - Review the JSON reports and share findings with your security team
 
 ❌ **Don't:**

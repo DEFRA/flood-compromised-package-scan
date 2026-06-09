@@ -7,24 +7,23 @@ module.exports = {
   // List of repositories to scan
   // Format: { owner: 'username', repo: 'repository-name' }
   repositories: [
-    { owner: 'defra', repo: 'flood-app' },
-    { owner: 'defra', repo: 'flood-service' },
-    { owner: 'defra', repo: 'flood-db' },
-    { owner: 'defra', repo: 'flood-gis' },
-    { owner: 'defra', repo: 'flood-webchat' },
-    { owner: 'defra', repo: 'cap-xml' },
-    { owner: 'defra', repo: 'cap-xml-db' },
-    { owner: 'defra', repo: 'fws-app' },
-    { owner: 'defra', repo: 'fws-api' },
-    { owner: 'defra', repo: 'fws-db' },
-    { owner: 'defra', repo: 'flood-data' },
-    { owner: 'defra', repo: 'flood-service-tests-v2' },
-    { owner: 'defra', repo: 'cap-xml-tests' }
+    { owner: 'defra', repo: 'flood-app' }//,
+    // { owner: 'defra', repo: 'flood-service' },
+    // { owner: 'defra', repo: 'flood-db' },
+    // { owner: 'defra', repo: 'flood-gis' },
+    // { owner: 'defra', repo: 'flood-webchat' },
+    // { owner: 'defra', repo: 'cap-xml' },
+    // { owner: 'defra', repo: 'cap-xml-db' },
+    // { owner: 'defra', repo: 'fws-app' },
+    // { owner: 'defra', repo: 'fws-api' },
+    // { owner: 'defra', repo: 'fws-db' },
+    // { owner: 'defra', repo: 'flood-data' },
+    // { owner: 'defra', repo: 'flood-service-tests-v2' },
+    // { owner: 'defra', repo: 'cap-xml-tests' }
   ],
 
-  // Malware database directory path (or single file for backward compatibility)
-  // Directory should contain JSON files with compromisedPackages arrays
-  malwareDbPath: './malware-dbs',
+  // Compromised packages list URL (remote text file)
+  compromisedPackagesUrl: 'https://raw.githubusercontent.com/Cobenian/shai-hulud-detect/main/compromised-packages.txt',
 
   // Files to check in each repository
   targetFiles: ['package.json', 'package-lock.json'],
