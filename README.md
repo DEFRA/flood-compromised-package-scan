@@ -103,8 +103,19 @@ The scanner is pre-configured to check these repositories:
 - `defra/fws-api`
 - `defra/fws-db`
 - `defra/flood-data`
+- `defra/flood-service-tests-v2`
+- `defra/cap-xml-tests`
+- `defra/cyltfr-app`
+- `defra/cyltfr-service`
+- `defra/cyltfr-admin`
+- `defra/cyltfr-data`
+- `defra/fmp-app`
+- `defra/fmp-service`
+- `defra/fmp-api`
+- `defra/fmp-riskadmin-api`
+- `defra/fmp-gis-gp-services`
 
-To modify the repository list, edit `config.js`:
+Please comment out any repositories that you're not interested in scanning.
 
 ```javascript
 repositories: [
@@ -477,6 +488,7 @@ repo-scanner/
 - Set token expiration dates (90 days recommended)
 - Keep `.env` file out of version control (already in .gitignore)
 - Review the JSON reports and share findings with your security team
+- Review flagged packages but marked as safe, to ensure that they don't pose a higher risk due to the number of incidents in the past
 
 ❌ **Don't:**
 - Commit GitHub tokens to repositories
