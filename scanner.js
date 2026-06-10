@@ -1,11 +1,13 @@
 const GitHubAPI = require('./github-api')
 const DependencyChecker = require('./dependency-checker')
+const CompromisedPackagesLoader = require('./compromised-packages-loader')
 
 class Scanner {
   constructor (config) {
     this.config = config
     this.githubApi = new GitHubAPI(config.githubToken)
-    this.checker = new DependencyChecker(config.malwareDbPath)
+    this.checker = new DependencyChecker()
+    this.loader = new CompromisedPackagesLoader(config.compromisedPackagesUrl)
     this.results = []
   }
 
@@ -59,9 +61,20 @@ class Scanner {
       missingFiles: 0
     }
 
-    // Check each target file
-    for (const filename of this.config.targetFiles) {
-      const fileResult = await this.scanFile(owner, repo, branch, filename)
+    // Find all matching files in the repository tree
+    const matchingPaths = await this.githubApi.findFiles(owner, repo, branch, this.config.targetFiles)
+
+    if (matchingPaths.length === 0) {
+      console.log('    ⊘ No package.json or package-lock.json files found')
+      branchResult.missingFiles++
+      this.results.push(branchResult)
+      this.printBranchSummary(branchResult)
+      return
+    }
+
+    // Scan each discovered file
+    for (const filePath of matchingPaths) {
+      const fileResult = await this.scanFile(owner, repo, branch, filePath)
 
       if (fileResult) {
         branchResult.files.push(fileResult)
@@ -72,8 +85,6 @@ class Scanner {
         } else if (fileResult.status === 'SAFE') {
           branchResult.safeFiles++
         }
-      } else {
-        branchResult.missingFiles++
       }
     }
 
@@ -84,16 +95,17 @@ class Scanner {
   /**
    * Scan a single file in a branch
    */
-  async scanFile (owner, repo, branch, filename) {
-    const content = await this.githubApi.getFileContent(owner, repo, filename, branch)
+  async scanFile (owner, repo, branch, filePath) {
+    const content = await this.githubApi.getFileContent(owner, repo, filePath, branch)
 
     if (!content) {
-      console.log(`    ⊘ ${filename}: Not found`)
+      console.log(`    ⊘ ${filePath}: Not found`)
       return null
     }
 
+    const filename = filePath.split('/').pop()
     const analysis = this.checker.analyzeDependencies(content, filename)
-    const report = this.checker.generateFileReport(analysis, filename)
+    const report = this.checker.generateFileReport(analysis, filePath)
 
     return report
   }
@@ -369,6 +381,10 @@ class Scanner {
   async run () {
     console.log('GitHub Repository Security Scanner')
     console.log('==================================\n')
+
+    // Download and load the compromised packages list
+    const remoteData = await this.loader.load()
+    this.checker.loadFromRemoteData(remoteData)
 
     // Check rate limit
     const rateLimit = await this.githubApi.checkRateLimit()

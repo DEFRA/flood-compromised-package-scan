@@ -5,7 +5,24 @@ const semver = require('semver')
 class DependencyChecker {
   constructor (malwareDbPath) {
     this.vulnerabilityStats = []
-    this.malwareDb = this.loadMalwareDb(malwareDbPath)
+    this.malwareDb = malwareDbPath ? this.loadMalwareDb(malwareDbPath) : new Map()
+  }
+
+  /**
+   * Load malware database from remotely downloaded and parsed data
+   * @param {Object} remoteData - { vulnerabilities, malwareMap } from CompromisedPackagesLoader
+   */
+  loadFromRemoteData (remoteData) {
+    this.malwareDb = remoteData.malwareMap
+
+    this.vulnerabilityStats = remoteData.vulnerabilities
+      .filter(v => v.packages.length > 0)
+      .map(v => ({
+        name: v.name,
+        description: v.description,
+        packageCount: v.packages.length,
+        severity: v.severity || 'critical'
+      }))
   }
 
   /**

@@ -5,7 +5,12 @@ class GitHubAPI {
     if (!token) {
       throw new Error('GitHub token is required. Please set GITHUB_TOKEN in .env file')
     }
-    this.octokit = new Octokit({ auth: token })
+    this.octokit = new Octokit({
+      auth: token,
+      headers: {
+        'X-GitHub-Api-Version': '2022-11-28'
+      }
+    })
   }
 
   /**
@@ -61,6 +66,29 @@ class GitHubAPI {
       }
       console.error(`Error fetching ${path} from ${owner}/${repo}@${branch}:`, error.message)
       return null
+    }
+  }
+
+  /**
+   * Find all paths matching target filenames in a branch using the Git Tree API
+   */
+  async findFiles (owner, repo, branch, filenames) {
+    try {
+      const response = await this.octokit.rest.git.getTree({
+        owner,
+        repo,
+        tree_sha: branch,
+        recursive: 'true'
+      })
+
+      const matchingPaths = response.data.tree
+        .filter(item => item.type === 'blob' && filenames.includes(item.path.split('/').pop()))
+        .map(item => item.path)
+
+      return matchingPaths
+    } catch (error) {
+      console.error(`Error fetching tree for ${owner}/${repo}@${branch}:`, error.message)
+      return []
     }
   }
 

@@ -5,19 +5,29 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "lint": "standard",
     "lint:fix": "standard --fix"
   },
-  "keywords": ["github", "security", "dependency-scanner"],
+  "keywords": [
+    "github",
+    "security",
+    "dependency-scanner"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "octokit": "3.1.2",
     "dotenv": "16.4.5",
+    "octokit": "3.1.2",
     "semver": "7.6.0"
   },
   "devDependencies": {
+    "jest": "30.4.2",
     "standard": "17.1.0"
+  },
+  "standard": {
+    "ignore": [
+      "test/"
+    ]
   }
 }

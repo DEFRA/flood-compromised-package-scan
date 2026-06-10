@@ -19,12 +19,21 @@ module.exports = {
     { owner: 'defra', repo: 'fws-db' },
     { owner: 'defra', repo: 'flood-data' },
     { owner: 'defra', repo: 'flood-service-tests-v2' },
-    { owner: 'defra', repo: 'cap-xml-tests' }
+    { owner: 'defra', repo: 'cap-xml-tests' },
+    { owner: 'defra', repo: 'cyltfr-app' },
+    { owner: 'defra', repo: 'cyltfr-service' },
+    { owner: 'defra', repo: 'cyltfr-admin' },
+    { owner: 'defra', repo: 'cyltfr-data' },
+    { owner: 'defra', repo: 'fmp-app' },
+    { owner: 'defra', repo: 'fmp-service' },
+    { owner: 'defra', repo: 'fmp-api' },
+    { owner: 'defra', repo: 'fmp-riskadmin-api' },
+    { owner: 'defra', repo: 'fmp-gis-gp-services' },
+    { owner: 'defra', repo: 'future-flood-forecasting-web-portal-importer' }
   ],
 
-  // Malware database directory path (or single file for backward compatibility)
-  // Directory should contain JSON files with compromisedPackages arrays
-  malwareDbPath: './malware-dbs',
+  // Compromised packages list URL (remote text file)
+  compromisedPackagesUrl: 'https://raw.githubusercontent.com/Cobenian/shai-hulud-detect/main/compromised-packages.txt',
 
   // Files to check in each repository
   targetFiles: ['package.json', 'package-lock.json'],
