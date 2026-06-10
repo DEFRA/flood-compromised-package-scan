@@ -28,7 +28,8 @@ module.exports = {
     { owner: 'defra', repo: 'fmp-service' },
     { owner: 'defra', repo: 'fmp-api' },
     { owner: 'defra', repo: 'fmp-riskadmin-api' },
-    { owner: 'defra', repo: 'fmp-gis-gp-services' }
+    { owner: 'defra', repo: 'fmp-gis-gp-services' },
+    { owner: 'defra', repo: 'future-flood-forecasting-web-portal-importer' }
   ],
 
   // Compromised packages list URL (remote text file)
